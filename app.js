@@ -9,7 +9,14 @@ let port = "8080";
 // server, always run the function passed into app.use()
 app.use(express.static("public"));
 
-// ------------- defining middleware functions
+// make sure you add the middleware function fore each data type that you expect to receive in your request bodies 
+// all the available functions are in express docs ofc ( API Reference > express() )
+// the two lines below have replaced the body-parser npm package. These are actually based on body-parser itself. They come built into express by default
+app.use(express.urlencoded({extended : true})); 
+app.use(express.json());
+app.use(express.text());
+
+// ------------- defining custom middleware functions
 
 // defining a custom middleware fn
 // middleware fn's have access to request obj, response obj and the next() fn
@@ -35,9 +42,16 @@ app.get('/json' , (req , res) => {
 })
 
 // we are passing middleware function as a callback fn, not calling it ourself. 
-// one way to use a middleware function. the other way is app.use() if i'm not mistaken
+// one way to use a middleware function. the other way is app.use() if i'm not mistaken. using it in this way will apply it on all requests.
+// this middleware fn will only run on this route. 
+
 app.get("/imf" , middlewareFunction , (req , res ) => {
     res.status(200).send("Demonstrated the middleware fn");
+})
+
+app.post("/" , (req , res) => {
+    console.log(req.body);
+    res.send(req.body);
 })
 
 
